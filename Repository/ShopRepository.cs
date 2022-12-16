@@ -22,5 +22,10 @@ namespace Repository
 
         public Shop GetShop(Guid shopId, bool trackChanges) => FindByCondition(c
 => c.Id.Equals(shopId), trackChanges).SingleOrDefault();
+
+        public void CreateShop(Shop shop) => Create(shop);
+
+        public IEnumerable<Shop> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+FindByCondition(x => ids.Contains(x.Id), trackChanges).ToList();
     }
 }

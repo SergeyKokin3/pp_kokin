@@ -23,6 +23,12 @@ namespace Repository
         public Product GetProduct(Guid shopId, Guid id, bool trackChanges) =>
         FindByCondition(e => e.ShopId.Equals(shopId) && e.Id.Equals(id),
         trackChanges).SingleOrDefault();
+
+        public void CreateProductForShop(Guid shopId, Product product)
+        {
+            product.ShopId = shopId;
+            Create(product);
+        }
     }
 
 }

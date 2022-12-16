@@ -18,6 +18,10 @@ namespace pp_kokin
 
             CreateMap<Employee, EmployeeDto>();
             CreateMap<Product, ProductDto>();
+            CreateMap<CompanyForCreationDto, Company>();
+            CreateMap<EmployeeForCreationDto, Employee>();
+            CreateMap<ShopForCreationDto, Shop>();
+            CreateMap<ProductForCreationDto, Product>();
         }
     }
 }

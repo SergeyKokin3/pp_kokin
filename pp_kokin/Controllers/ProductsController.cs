@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
+using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +38,7 @@ namespace pp_kokin.Controllers
             return Ok(productsDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetProductForShop")]
         public IActionResult GetProductForShop(Guid shopId, Guid id)
         {
             var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
@@ -56,6 +57,32 @@ namespace pp_kokin.Controllers
             }
             var product = _mapper.Map<ProductDto>(productDb);
             return Ok(product);
+        }
+
+        [HttpPost]
+        public IActionResult CreateProductForShop(Guid shopId, [FromBody]
+ProductForCreationDto product)
+        {
+            if (product == null)
+            {
+                _logger.LogError("ProductForCreationDto object sent from client is null.");
+            return BadRequest("ProductForCreationDto object is null");
+            }
+            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            if (shop == null)
+            {
+                _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
+            return NotFound();
+            }
+            var productEntity = _mapper.Map<Product>(product);
+            _repository.Product.CreateProductForShop(shopId, productEntity);
+            _repository.Save();
+            var productToReturn = _mapper.Map<ProductDto>(productEntity);
+            return CreatedAtRoute("GetProductForShop", new
+            {
+                shopId,
+                id = productToReturn.Id
+            }, productToReturn);
         }
     }
 }
