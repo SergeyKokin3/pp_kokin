@@ -29,6 +29,11 @@ namespace Repository
             product.ShopId = shopId;
             Create(product);
         }
+
+        public void DeleteProduct(Product product)
+        {
+            Delete(product);
+        }
     }
 
 }

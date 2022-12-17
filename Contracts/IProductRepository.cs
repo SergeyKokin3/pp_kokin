@@ -12,5 +12,6 @@ namespace Contracts
         IEnumerable<Product> GetProducts(Guid shopId, bool trackChanges);
         Product GetProduct(Guid shopId, Guid id, bool trackChanges);
         void CreateProductForShop(Guid shopId, Product product);
+        void DeleteProduct(Product product);
     }
 }

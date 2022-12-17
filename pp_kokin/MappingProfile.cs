@@ -22,6 +22,11 @@ namespace pp_kokin
             CreateMap<EmployeeForCreationDto, Employee>();
             CreateMap<ShopForCreationDto, Shop>();
             CreateMap<ProductForCreationDto, Product>();
+            CreateMap<EmployeeForUpdateDto, Employee>().ReverseMap();
+            CreateMap<CompanyForUpdateDto, Company>().ReverseMap();
+            CreateMap<ProductForUpdateDto, Product>().ReverseMap();
+            CreateMap<ShopForUpdateDto, Shop>().ReverseMap();
+
         }
     }
 }

@@ -3,6 +3,7 @@ using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using pp_kokin.ModelBinders;
 
@@ -103,6 +104,66 @@ IEnumerable<ShopForCreationDto> shopCollection)
             return CreatedAtRoute("ShopCollection", new { ids },
             shopCollectionToReturn);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteShop(Guid id)
+        {
+            var shop = _repository.Shop.GetShop(id, trackChanges: false);
+            if (shop == null)
+            {
+                _logger.LogInfo($"Shop with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.Shop.DeleteShop(shop);
+            _repository.Save();
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateShop(Guid id, [FromBody] ShopForUpdateDto
+shop)
+        {
+            if (shop == null)
+            {
+            _logger.LogError("ShopForUpdateDto object sent from client is null.");
+                return BadRequest("ShopForUpdateDto object is null");
+            }
+            var shopEntity = _repository.Shop.GetShop(id, trackChanges: true);
+            if (shopEntity == null)
+            {
+                _logger.LogInfo($"Shop with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _mapper.Map(shop, shopEntity);
+            _repository.Save();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateShop(Guid id,
+ [FromBody] JsonPatchDocument<ShopForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                _logger.LogError("patchDoc object sent from client is null.");
+                return BadRequest("patchDoc object is null");
+            }
+            var shopEntity = _repository.Shop.GetShop(id,
+           trackChanges:
+            true);
+            if (shopEntity == null)
+            {
+                _logger.LogInfo($"Shop with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            var shopToPatch = _mapper.Map<ShopForUpdateDto>(shopEntity);
+            patchDoc.ApplyTo(shopToPatch);
+
+            _mapper.Map(shopToPatch, shopEntity);
+            _repository.Save();
+            return NoContent();
+        }
+
 
     }
 }

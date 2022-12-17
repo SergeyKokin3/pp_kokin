@@ -27,5 +27,10 @@ namespace Repository
 
         public IEnumerable<Shop> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
 FindByCondition(x => ids.Contains(x.Id), trackChanges).ToList();
+
+        public void DeleteShop(Shop shop)
+        {
+            Delete(shop);
+        }
     }
 }
