@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using Contracts;
+using Microsoft.AspNetCore.Mvc;
 
 public class Startup
 {
@@ -29,8 +30,12 @@ public class Startup
             config.RespectBrowserAcceptHeader = true;
             config.ReturnHttpNotAcceptable = true;
         }).AddNewtonsoftJson()
- .AddXmlDataContractSerializerFormatters()
+        .AddXmlDataContractSerializerFormatters()
         .AddCustomCSVFormatter();
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

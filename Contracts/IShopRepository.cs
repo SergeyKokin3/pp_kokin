@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IShopRepository
     {
-        IEnumerable<Shop> GetAllShops(bool trackChanges);
-        Shop GetShop(Guid shopId, bool trackChanges);
+        Task<IEnumerable<Shop>> GetAllShopsAsync(bool trackChanges);
+        Task<Shop> GetShopAsync(Guid shopId, bool trackChanges);
         void CreateShop(Shop shop);
-        IEnumerable<Shop> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
+        Task<IEnumerable<Shop>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);
         void DeleteShop(Shop shop);
     }
 }

@@ -15,17 +15,17 @@ namespace Repository
         : base(repositoryContext)
         {
         }
-        public IEnumerable<Shop> GetAllShops(bool trackChanges) =>
+        public async Task<IEnumerable<Shop>> GetAllShopsAsync(bool trackChanges) =>
        FindAll(trackChanges)
        .OrderBy(c => c.Name)
        .ToList();
 
-        public Shop GetShop(Guid shopId, bool trackChanges) => FindByCondition(c
+        public async Task<Shop> GetShopAsync(Guid shopId, bool trackChanges) => FindByCondition(c
 => c.Id.Equals(shopId), trackChanges).SingleOrDefault();
 
         public void CreateShop(Shop shop) => Create(shop);
 
-        public IEnumerable<Shop> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+        public async Task<IEnumerable<Shop>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges) =>
 FindByCondition(x => ids.Contains(x.Id), trackChanges).ToList();
 
         public void DeleteShop(Shop shop)

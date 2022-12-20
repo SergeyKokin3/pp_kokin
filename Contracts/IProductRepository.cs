@@ -9,8 +9,8 @@ namespace Contracts
 {
     public interface IProductRepository
     {
-        IEnumerable<Product> GetProducts(Guid shopId, bool trackChanges);
-        Product GetProduct(Guid shopId, Guid id, bool trackChanges);
+        Task<IEnumerable<Product>> GetProductsAsync(Guid shopId, bool trackChanges);
+        Task<Product> GetProductAsync(Guid shopId, Guid id, bool trackChanges);
         void CreateProductForShop(Guid shopId, Product product);
         void DeleteProduct(Product product);
     }

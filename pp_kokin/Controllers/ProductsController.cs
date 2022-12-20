@@ -25,30 +25,30 @@ namespace pp_kokin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProductsForShop(Guid shopId)
+        public async Task<IActionResult> GetProductsForShop(Guid shopId)
         {
-            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            var shop = await _repository.Shop.GetShopAsync(shopId, trackChanges: false);
             if (shop == null)
             {
                 _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
             return NotFound();
             }
-            var productsFromDb = _repository.Product.GetProducts(shopId,
+            var productsFromDb = await _repository.Product.GetProductsAsync(shopId,
             trackChanges: false);
             var productsDto = _mapper.Map<IEnumerable<ProductDto>>(productsFromDb);
             return Ok(productsDto);
         }
 
         [HttpGet("{id}", Name = "GetProductForShop")]
-        public IActionResult GetProductForShop(Guid shopId, Guid id)
+        public async Task<IActionResult> GetProductForShop(Guid shopId, Guid id)
         {
-            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            var shop = await _repository.Shop.GetShopAsync(shopId, trackChanges: false);
             if (shop == null)
             {
                 _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
             return NotFound();
             }
-            var productDb = _repository.Product.GetProduct(shopId, id,
+            var productDb = await _repository.Product.GetProductAsync(shopId, id,
            trackChanges:
             false);
             if (productDb == null)
@@ -61,7 +61,7 @@ namespace pp_kokin.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProductForShop(Guid shopId, [FromBody]
+        public async Task<IActionResult> CreateProductForShop(Guid shopId, [FromBody]
 ProductForCreationDto product)
         {
             if (product == null)
@@ -69,7 +69,7 @@ ProductForCreationDto product)
                 _logger.LogError("ProductForCreationDto object sent from client is null.");
             return BadRequest("ProductForCreationDto object is null");
             }
-            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            var shop = await _repository.Shop.GetShopAsync(shopId, trackChanges: false);
             if (shop == null)
             {
                 _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
@@ -77,7 +77,7 @@ ProductForCreationDto product)
             }
             var productEntity = _mapper.Map<Product>(product);
             _repository.Product.CreateProductForShop(shopId, productEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             var productToReturn = _mapper.Map<ProductDto>(productEntity);
             return CreatedAtRoute("GetProductForShop", new
             {
@@ -87,15 +87,15 @@ ProductForCreationDto product)
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProductForShop(Guid shopId, Guid id)
+        public async Task<IActionResult> DeleteProductForShop(Guid shopId, Guid id)
         {
-            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            var shop = await _repository.Shop.GetShopAsync(shopId, trackChanges: false);
             if (shop == null)
             {
                 _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
             return NotFound();
             }
-            var productForShop = _repository.Product.GetProduct(shopId, id,
+            var productForShop = await _repository.Product.GetProductAsync(shopId, id,
             trackChanges: false);
             if (productForShop == null)
             {
@@ -103,12 +103,12 @@ ProductForCreationDto product)
             return NotFound();
             }
             _repository.Product.DeleteProduct(productForShop);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProductForShop(Guid shopId, Guid id, [FromBody]
+        public async Task<IActionResult> UpdateProductForShop(Guid shopId, Guid id, [FromBody]
 ProductForUpdateDto product)
         {
             if (product == null)
@@ -116,13 +116,13 @@ ProductForUpdateDto product)
                 _logger.LogError("ProductForUpdateDto object sent from client is null.");
             return BadRequest("ProductForUpdateDto object is null");
             }
-            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            var shop = await _repository.Shop.GetShopAsync(shopId, trackChanges: false);
             if (shop == null)
             {
                 _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
             return NotFound();
             }
-            var productEntity = _repository.Product.GetProduct(shopId, id,
+            var productEntity = await _repository.Product.GetProductAsync(shopId, id,
            trackChanges:
             true);
             if (productEntity == null)
@@ -131,12 +131,12 @@ ProductForUpdateDto product)
             return NotFound();
             }
             _mapper.Map(product, productEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartiallyUpdateProductForShop(Guid shopId, Guid id,
+        public async Task<IActionResult> PartiallyUpdateProductForShop(Guid shopId, Guid id,
  [FromBody] JsonPatchDocument<ProductForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
@@ -144,13 +144,13 @@ ProductForUpdateDto product)
                 _logger.LogError("patchDoc object sent from client is null.");
                 return BadRequest("patchDoc object is null");
             }
-            var shop = _repository.Shop.GetShop(shopId, trackChanges: false);
+            var shop = await _repository.Shop.GetShopAsync(shopId, trackChanges: false);
             if (shop == null)
             {
                 _logger.LogInfo($"Shop with id: {shopId} doesn't exist in the database.");
             return NotFound();
             }
-            var productEntity = _repository.Product.GetProduct(shopId, id,
+            var productEntity = await _repository.Product.GetProductAsync(shopId, id,
            trackChanges:
             true);
             if (productEntity == null)
@@ -161,7 +161,7 @@ ProductForUpdateDto product)
             var productToPatch = _mapper.Map<ProductForUpdateDto>(productEntity);
             patchDoc.ApplyTo(productToPatch);
  _mapper.Map(productToPatch, productEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
 

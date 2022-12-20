@@ -16,11 +16,11 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Product> GetProducts(Guid shopId, bool trackChanges) =>
+        public async Task<IEnumerable<Product>> GetProductsAsync(Guid shopId, bool trackChanges) =>
         FindByCondition(e => e.ShopId.Equals(shopId), trackChanges)
         .OrderBy(e => e.Name);
 
-        public Product GetProduct(Guid shopId, Guid id, bool trackChanges) =>
+        public async Task<Product> GetProductAsync(Guid shopId, Guid id, bool trackChanges) =>
         FindByCondition(e => e.ShopId.Equals(shopId) && e.Id.Equals(id),
         trackChanges).SingleOrDefault();
 
